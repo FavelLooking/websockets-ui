@@ -13,4 +13,8 @@ wss.on("connection", (ws) => {
     console.log("Received message:", message);
     ws.send(JSON.stringify({ response: `Send: ${message}` }));
   });
+
+  ws.on("close", () => {
+    console.log("WebSocket connection closed");
+  });
 });
