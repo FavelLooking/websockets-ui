@@ -15,8 +15,20 @@ interface BaseMessage<T> {
 
 export interface User {
   name: string;
-  password: string;
-  index: number;
+  password?: string;
+  index?: number;
+  wins?: number;
+}
+
+export interface WinnerData {
+  name: string;
+  wins: number;
+}
+
+export interface UpdateWinnersMessage {
+  type: "update_winners";
+  data: WinnerData[];
+  id: number;
 }
 
 export type RegistrationMessage = BaseMessage<string>;
