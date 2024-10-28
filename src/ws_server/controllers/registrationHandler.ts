@@ -1,11 +1,10 @@
 import WebSocket from "ws";
-import { WinnerData, UpdateWinnersMessage } from "../interfaces/interfaces";
+import { UpdateWinnersMessage } from "../interfaces/interfaces";
 
 import {
   RegistrationData,
   RegistrationMessage,
 } from "../interfaces/interfaces";
-//import { createRoomHandler } from "./createRoomHandler";
 import { localBD } from "../localBD/localBD";
 export const registrationHandler = (
   message: RegistrationMessage,
@@ -22,19 +21,50 @@ export const registrationHandler = (
 
   console.log("New user registered:", newUser);
   localBD.push(newUser);
-  console.log("LocalBD before sending:", localBD);
-  ws.send(JSON.stringify({ type: "update_room", data: localBD }));
 
-  const winnersData: WinnerData[] = localBD.map((user) => ({
-    name: user.name,
-    wins: user.wins ?? 0,
-  }));
+  const regResponse = {
+    type: "reg",
+    data: JSON.stringify({
+      name: newUser.name,
+      index: newUser.index,
+      error: false,
+      errorText: "",
+    }),
+    id: message.id,
+  };
+  ws.send(JSON.stringify(regResponse));
+
+  const updateRoomMessage = {
+    type: "update_room",
+    data: JSON.stringify([
+      {
+        roomId: 1,
+        roomUsers: localBD.map((user) => ({
+          name: user.name,
+          index: user.index,
+        })),
+      },
+    ]),
+    id: message.id,
+  };
+  ws.send(JSON.stringify(updateRoomMessage));
+
+  const winnersData = Array.isArray(localBD)
+    ? localBD.map((user) => ({
+        name: user.name,
+        wins: user.wins ?? 0,
+      }))
+    : [];
+
+  console.log(winnersData);
 
   const winnersMessage: UpdateWinnersMessage = {
     type: "update_winners",
-    data: winnersData,
+    data: JSON.stringify(winnersData),
     id: message.id,
   };
+
+  console.log(winnersData);
 
   ws.send(JSON.stringify(winnersMessage));
 };

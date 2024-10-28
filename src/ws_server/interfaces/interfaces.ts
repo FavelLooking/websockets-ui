@@ -3,6 +3,13 @@ export interface RegistrationData {
   password: string;
 }
 
+export interface RegistrationResponseData {
+  name: string;
+  index: number | string;
+  error: boolean;
+  errorText: string;
+}
+
 export interface CreateRoomData {
   roomName: string;
 }
@@ -27,7 +34,7 @@ export interface WinnerData {
 
 export interface UpdateWinnersMessage {
   type: "update_winners";
-  data: WinnerData[];
+  data: string;
   id: number;
 }
 

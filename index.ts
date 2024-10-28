@@ -6,7 +6,6 @@ import {
   Message,
   RegistrationMessage,
 } from "./src/ws_server/interfaces/interfaces";
-//import { createRoomHandler } from "./src/ws_server/controllers/createRoomHandler";
 
 httpServer.listen(PORT, () => {
   console.log(`Start static HTTP server on the ${PORT} port!`);
@@ -18,7 +17,6 @@ wss.on("connection", (ws) => {
   ws.on("message", (message) => {
     const formattedMessage = message.toString();
     console.log("Received message:", formattedMessage);
-    ws.send(formattedMessage);
 
     try {
       const parsedData: Message = JSON.parse(formattedMessage);
@@ -27,7 +25,6 @@ wss.on("connection", (ws) => {
       switch (parsedData.type) {
         case "reg":
           registrationHandler(parsedData as RegistrationMessage, ws);
-          //         createRoomHandler(ws);
           break;
         case "create_room":
           break;
